@@ -85,6 +85,7 @@ PageBase {
                 required property int index
                 property real textOpacity: modelData?.pairing ? 0.5 : 1
                 property bool wasPairing
+                property bool failed
 
                 anchors.left: deviceList.list.contentItem.left
                 anchors.right: deviceList.list.contentItem.right
@@ -98,11 +99,33 @@ PageBase {
 
                 Connections {
                     function onPairedChanged(): void {
-                        if (newDevice.wasPairing && newDevice.modelData?.paired)
-                            root.nState.closeSubPage();
+                        if (!newDevice.wasPairing || !newDevice.modelData?.paired)
+                            return;
+                        newDevice.wasPairing = false;
+                        failCheck.stop();
+                        newDevice.modelData.trusted = true;
+                        newDevice.modelData.connect();
+                        root.nState.closeSubPage();
+                    }
+
+                    function onPairingChanged(): void {
+                        if (newDevice.wasPairing && !newDevice.modelData?.pairing)
+                            failCheck.restart();
                     }
 
                     target: newDevice.modelData
+                }
+
+                Timer {
+                    id: failCheck
+
+                    interval: 1000
+                    onTriggered: {
+                        if (newDevice.wasPairing && !newDevice.modelData?.paired) {
+                            newDevice.wasPairing = false;
+                            newDevice.failed = true;
+                        }
+                    }
                 }
 
                 StateLayer {
@@ -112,8 +135,9 @@ PageBase {
                     disabled: newDevice.modelData?.pairing ?? false
 
                     onClicked: {
-                        newDevice.modelData?.pair();
+                        newDevice.failed = false;
                         newDevice.wasPairing = true;
+                        newDevice.modelData?.pair();
                     }
                 }
 
@@ -147,8 +171,14 @@ PageBase {
 
                         StyledText {
                             Layout.fillWidth: true
-                            text: newDevice.modelData?.pairing ? Tr.tr("Pairing...") : (newDevice.modelData?.address ?? "")
-                            color: Colours.palette.m3outline
+                            text: {
+                                if (newDevice.modelData?.pairing)
+                                    return Tr.tr("Pairing...");
+                                if (newDevice.failed)
+                                    return Tr.tr("Couldn't pair, click to try again");
+                                return newDevice.modelData?.address ?? "";
+                            }
+                            color: newDevice.failed ? Colours.palette.m3error : Colours.palette.m3outline
                             font: Tokens.font.label.small
                             elide: Text.ElideRight
                             animate: true

@@ -1,13 +1,13 @@
 pkgname=fiordland-base
 pkgver=0.9.1
-pkgrel=2
+pkgrel=3
 pkgdesc="Fiordland Linux release, core packages and system migrations"
 arch=('any')
 url='https://fiordlandlinux.org'
 license=('MIT')
 depends=('base' 'linux-firmware' 'btrfs-progs' 'dosfstools' 'networkmanager' 'sudo' 'zram-generator'
          'snapper' 'snap-pac' 'pacman-contrib' 'flatpak' 'tawaki' 'fiordland-keyring' 'xdg-user-dirs'
-         'xdg-utils' 'pipewire' 'pipewire-pulse' 'wireplumber' 'ntfs-3g' 'exfatprogs' 'udisks2' 'reflector'
+         'xdg-utils' 'pipewire' 'pipewire-pulse' 'wireplumber' 'bluez' 'bluez-utils' 'ntfs-3g' 'exfatprogs' 'udisks2' 'reflector'
          'grub' 'grub-btrfs' 'inotify-tools' 'os-prober')
 
 package() {

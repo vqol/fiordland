@@ -12,6 +12,7 @@ crest is a fork of [Caelestia shell](https://github.com/caelestia-dots/shell) v2
 - Optional fastfetch when a terminal opens (Settings → Apps)
 - `crest:` global shortcuts and `crest-` layer namespaces
 - Fiordland defaults for apps and the calculator
+- A Bluetooth pairing agent: pairing codes, PINs and connection requests show up as a prompt, so keyboards and phones pair from Settings → Connected devices without `bluetoothctl`
 
 ## Running
 
